@@ -1,0 +1,35 @@
+class GestorTareas:
+    def _init_(self):
+        self.tareas = []
+
+    def agregar_tarea(self, tarea):  
+        self.tareas.append(tarea)
+        print("Tarea agregada")
+
+    def mostrar_tareas(self):
+        if not self.tareas:
+            print("NO HAY TAREAS PENDIENTES:")
+        else:
+            print("TAREAS PENDIENTES:")
+            for i, tarea in enumerate(self.tareas, 1):
+                print(f"{i}. {tarea}")  
+
+mi_gestor = GestorTareas()
+
+while True:
+    print("\n---MENU---")  
+    print("1. AGREGAR TAREA")
+    print("2. MOSTRAR TAREAS")  
+    print("3. SALIR")
+    opcion = input("Seleccione una opcion: ")
+
+    if opcion == "1":
+        tarea = input("Escribe la tarea: ")
+        mi_gestor.agregar_tarea(tarea)
+    elif opcion == "2":
+        mi_gestor.mostrar_tareas()
+    elif opcion == "3":
+        print("Salir del gestor de tareas")
+        break
+    else:
+        print("Opcion no valida. Intente de nuevo")
