@@ -1,0 +1,25 @@
+class departamento:
+    def __init__(self,nombre):
+        self.nombre=nombre
+
+class universidad:
+    def __init__(self,nombre):
+        self.nombre=nombre
+        self.departamento=[]
+
+    def agregar_departamento(self,departamento):
+        self.departamento.append(departamento)
+
+    
+
+dep1=departamento("ingenieria estadistica")
+dep2=departamento("informatica")
+
+uni=universidad("universidad nacional del altiplano")
+uni.agregar_departamento(dep1)
+uni.agregar_departamento(dep2)
+
+print("Universidad:", uni.nombre)
+print("Departamentos:")
+for dep in uni.departamento:
+    print("-",dep.nombre)
