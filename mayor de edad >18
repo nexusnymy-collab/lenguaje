@@ -1,0 +1,23 @@
+class Persona:
+    def __init__(self, nombre, edad):
+        self.nombre = nombre
+        self.edad = edad
+
+    def es_mayor_edad(self):
+        return self.edad >= 18
+
+
+
+nombre = input("Introduzca su nombre: ")
+edad = int(input("Introduzca su edad: "))
+
+
+persona = Persona(nombre, edad)
+
+
+if persona.es_mayor_edad():
+    print(f"{persona.nombre} es mayor de edad")
+else:
+    print(f"{persona.nombre} es menor de edad")
+
+
