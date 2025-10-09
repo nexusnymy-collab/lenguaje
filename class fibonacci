@@ -1,0 +1,18 @@
+class Fibonacci:
+    def __init__(self, limite):
+        self.limite = limite
+        self.a = 0
+        self.b = 1
+        self.contador = 0
+
+    def generar(self):
+        while self.contador < self.limite:
+            print(self.a, end="-")
+            self.a, self.b = self.b, self.a + self.b
+            self.contador += 1
+
+
+n = int(input("Ingrese la cantidad de términos de Fibonacci que desea: "))
+fib = Fibonacci(n)
+print("Serie de Fibonacci:")
+fib.generar()
