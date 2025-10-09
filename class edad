@@ -1,0 +1,21 @@
+class Persona:
+    def __init_(self,nombre,edad):
+        self.nombre=nombre
+        self.edad=edad
+
+    def __str__(self):
+        return f"{self.nombre},{self.edad} años"
+
+    def __eq__(self,otra):
+        return self.edad==otra.edad
+
+    def __gt__(self,otra):
+        return self.edad>otra.edad
+
+persona1=persona("carlos",30)
+persona2=persona("ana",25)
+persona3=persona("lucia",30)
+
+print(persona)
+print(persona)
+print(persona)
