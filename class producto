@@ -1,0 +1,31 @@
+import gc
+class producto:
+    def __init__(self,nombre,precio,cantidad):
+        self.nombre=nombre
+        self.precio=precio
+        self.cantidad=cantidad
+        print(f"\nnombre registrado {self.nombre} -${self.precio} en stock {self.cantidad}")
+
+    def mostrar_informacion(self):
+        print(f"{self.nombre} precio $ {self.precio:.2f} en stock {self.cantidad}")
+
+    def __del__(self):
+        print(f"producto eliminado: {self.nombre}")
+
+producto_datos=[("manzana",0.5,100),
+                ("pan",0.3,50),
+                ("leche",3.50,30)]
+
+inventario=[]
+
+for datos in producto_datos:
+    producto=producto(*datos)
+    producto.mostrar_informacion()
+    inventario.append(producto)
+
+inventario.clear()
+del producto
+gc.collect()
+print("fin de semana")
+
+    
