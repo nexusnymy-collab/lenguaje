@@ -1,0 +1,26 @@
+class persona:
+    def __init__(self,peso,altura):
+        self.peso=peso
+        self.altura=altura
+
+    def calcular_imc(self):
+        return self.peso(self.altura**2)
+
+    def clasificacion_imc(self):
+        imc=self.calcular_imc()
+    
+        if imc<18.5:
+            return "bajo peso"
+        elif 18.5 <24.9:
+            return "normal"
+        elif 25.0 <29.9:
+            return "sobrepeso"
+        elif 30.0 < 34.9:
+            return "obesidad grado1"
+        elif 35.0 < 39.9:
+            return "obesidad grado2"
+        elif 40.0 < mas:
+            return "obesidad grado3"
+persona1=persona(24.6,1.64)
+print("imc:",persona)
+
