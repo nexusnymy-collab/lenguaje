@@ -1,0 +1,14 @@
+class Numeros:
+    def __init__(self, limite):
+        self.limite = limite
+
+    def generar(self):
+        contador = 1
+        while contador <= self.limite:
+            print(contador)
+            contador += 1
+
+
+num = Numeros(10)
+print("Números del 1 al 10:")
+num.generar()
