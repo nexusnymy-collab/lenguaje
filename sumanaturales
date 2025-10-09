@@ -1,0 +1,29 @@
+class SumaNaturales:
+    def __init__(self, limite):
+        self.limite = limite
+        self.suma_pares = 0
+        self.suma_impares = 0
+        self.suma_total = 0
+
+    def calcularSuma(self):
+        print("Lista de números y si son pares o impares:")
+        for i in range(1, self.limite + 1):
+            self.suma_total += i
+            if i % 2 == 0:
+                self.suma_pares += i
+                print(f"{i} es PAR")
+            else:
+                self.suma_impares += i
+                print(f"{i} es IMPAR")
+        return self.suma_total, self.suma_pares, self.suma_impares
+
+def main():
+    miSuma = SumaNaturales(10)
+    resultado_total, resultado_pares, resultado_impares = miSuma.calcularSuma()
+    print("-" * 30)
+    print(f"La suma de los primeros {miSuma.limite} números naturales es: {resultado_total}")
+    print(f"La suma de los números pares es: {resultado_pares}")
+    print(f"La suma de los números impares es: {resultado_impares}")
+
+if __name__ == "__main__":
+    main()
