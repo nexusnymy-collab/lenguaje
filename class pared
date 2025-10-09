@@ -1,0 +1,26 @@
+class Pared:
+    def __init__(self, largo_ladrillo, alto_ladrillo, junta, area_pared):
+        self.largo_ladrillo = largo_ladrillo
+        self.alto_ladrillo = alto_ladrillo
+        self.junta = junta
+        self.area_pared = area_pared
+
+    def ladrillos_por_metro(self):
+        largo_total = self.largo_ladrillo + self.junta
+        alto_total = self.alto_ladrillo + self.junta
+        cantidad = 1 / (largo_total * alto_total)
+        return cantidad
+
+    def ladrillos_totales(self):
+        return self.ladrillos_por_metro() * self.area_pared
+
+largo = float(input("Ingresa el largo del ladrillo (en metros): "))
+alto = float(input("Ingresa el alto del ladrillo (en metros): "))
+junta = float(input("Ingresa el grosor de la junta (en metros): "))
+area = float(input("Ingresa el área total de la pared (en m²): "))
+
+pared = Pared(largo, alto, junta, area)
+
+print("\n--- RESULTADOS ---")
+print(f"Ladrillos por metro cuadrado: {pared.ladrillos_por_metro():.2f}")
+print(f"Total de ladrillos necesarios: {pared.ladrillos_totales():.0f}")
