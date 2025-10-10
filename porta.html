@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programación Numérica</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #00a8ff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Efecto de grid tecnológico de fondo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, rgba(0, 168, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(0, 168, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Partículas flotantes */
+        .particle {
+            position: fixed;
+            width: 3px;
+            height: 3px;
+            background: #00a8ff;
+            border-radius: 50%;
+            opacity: 0.5;
+            pointer-events: none;
+            animation: float 15s infinite;
+            z-index: 1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+        }
+
+        /* Canvas para el dibujo de Wall-E */
+        #wallECanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 40px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00a8ff;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 168, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        header:hover {
+            box-shadow: 0 0 50px rgba(0, 168, 255, 0.5);
+            transform: translateY(-5px);
+        }
+
+        .university-info {
+            background: rgba(0, 168, 255, 0.1);
+            border: 1px solid #00a8ff;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px auto;
+            text-align: center;
+            max-width: 800px;
+            transition: all 0.3s ease;
+        }
+
+        .university-info:hover {
+            background: rgba(0, 168, 255, 0.2);
+            box-shadow: 0 0 30px rgba(0, 168, 255, 0.4);
+        }
+
+        .university-info h3 {
+            color: #00a8ff;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(0, 168, 255, 0.5);
+        }
+
+        .university-info p {
+            color: #ffffff;
+            font-size: 1.1em;
+            margin: 8px 0;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: 3em;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 168, 255, 0.8);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(0, 168, 255, 0.8); }
+            to { text-shadow: 0 0 30px rgba(0, 168, 255, 1), 0 0 40px rgba(0, 168, 255, 0.6); }
+        }
+
+        .info {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .info-item {
+            padding: 10px 20px;
+            background: rgba(0, 168, 255, 0.1);
+            border: 1px solid #00a8ff;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .info-item:hover {
+            background: rgba(0, 168, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .info-label {
+            color: #00a8ff;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .info-value {
+            color: #ffffff;
+            font-size: 1.1em;
+            margin-top: 5px;
+        }
+
+        .units-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .unit {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #00a8ff;
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .unit:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 50px rgba(0, 168, 255, 0.4);
+            border-color: #00ffff;
+        }
+
+        .unit-title {
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .unit-number {
+            width: 50px;
+            height: 50px;
+            background: #00a8ff;
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.5em;
+        }
+
+        .links-list {
+            list-style: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        .links-list li {
+            margin-bottom: 15px;
+            transform: translateX(0);
+            transition: all 0.3s ease;
+        }
+
+        .links-list li:hover {
+            transform: translateX(10px);
+        }
+
+        .links-list a {
+            color: #00a8ff;
+            text-decoration: none;
+            font-size: 1.1em;
+            display: inline-block;
+            padding: 12px 20px;
+            background: rgba(0, 168, 255, 0.1);
+            border: 1px solid #00a8ff;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .links-list a::before {
+            content: '▶';
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .links-list a:hover::before {
+            margin-right: 15px;
+        }
+
+        .links-list a:hover {
+            background: rgba(0, 168, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 168, 255, 0.5);
+            color: #ffffff;
+            border-color: #00ffff;
+        }
+
+
+
+        @media (max-width: 768px) {
+            .units-container {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .info {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Canvas para el dibujo de Wall-E -->
+    <canvas id="wallECanvas"></canvas>
+
+    <div class="container">
+        <header>
+            <div class="university-info">
+                <h3>Universidad Nacional del Altiplano</h3>
+                <p>Escuela Profesional de Estadística e Informática</p>
+            </div>
+
+            <h1>Programación Numérica</h1>
+            <div class="info">
+                <div class="info-item">
+                    <div class="info-label">Docente</div>
+                    <div class="info-value">Fred Cruz Torres</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Estudiante</div>
+                    <div class="info-value">Nexu Yohan Mamani Yucra</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="units-container">
+            <!-- UNIDAD 1 -->
+            <div class="unit" id="unit1">
+                <h2 class="unit-title">
+                    <span class="unit-number">01</span>
+                    Unidad 1
+                </h2>
+                <ul class="links-list">
+                    <li><a href="https://tu-usuario.github.io/pagina1/" target="_blank">Página 1 - Portafolio</a></li>
+                    <li><a href="https://tu-usuario.github.io/pagina2/" target="_blank">Página 2 - Blog personal</a></li>
+                    <li><a href="https://tu-usuario.github.io/pagina3/" target="_blank">Página 3 - Proyecto escolar</a></li>
+                    <li><a href="https://tu-usuario.github.io/pagina4/" target="_blank">Página 4 - Galería</a></li>
+                    <li><a href="https://tu-usuario.github.io/pagina5/" target="_blank">Página 5 - Experimentos</a></li>
+                </ul>
+            </div>
+
+            <!-- UNIDAD 2 -->
+            <div class="unit" id="unit2">
+                <h2 class="unit-title">
+                    <span class="unit-number">02</span>
+                    Unidad 2
+                </h2>
+                <ul class="links-list">
+                    <li><a href="https://tu-usuario.github.io/pagina6/" target="_blank">Página 6 - Portafolio</a></li>
+                    <li><a href="https://tu-usuario.github.io/pagina7/" target="_blank">Página 7 - Blog personal</a></li>
+                    <li><a href="https://tu-usuario.github.io/pagina8/" target="_blank">Página 8 - Proyecto escolar</a></li>
+                    <li><a href="https://tu-usuario.github.io/pagina9/" target="_blank">Página 9 - Galería</a></li>
+                    <li><a href="https://tu-usuario.github.io/pagina10/" target="_blank">Página 10 - Experimentos</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dibujo de robot saludando en el centro
+        const wallECanvas = document.getElementById('wallECanvas');
+        const wallECtx = wallECanvas.getContext('2d');
+        wallECanvas.width = window.innerWidth;
+        wallECanvas.height = window.innerHeight;
+
+        let drawingRobot = false;
+
+        function drawRobot() {
+            if (drawingRobot) return;
+            drawingRobot = true;
+            wallECtx.clearRect(0, 0, wallECanvas.width, wallECanvas.height);
+
+            const centerX = wallECanvas.width / 2;
+            const centerY = wallECanvas.height / 2;
+            const scale = Math.min(wallECanvas.width, wallECanvas.height) / 800;
+
+            wallECtx.strokeStyle = '#00a8ff';
+            wallECtx.lineWidth = 3;
+            wallECtx.lineCap = 'round';
+            wallECtx.lineJoin = 'round';
+            wallECtx.shadowBlur = 15;
+            wallECtx.shadowColor = '#00a8ff';
+
+            const lines = [
+                // Cuerpo principal (rectángulo)
+                [[centerX - 60*scale, centerY - 20*scale], [centerX + 60*scale, centerY - 20*scale]],
+                [[centerX + 60*scale, centerY - 20*scale], [centerX + 60*scale, centerY + 80*scale]],
+                [[centerX + 60*scale, centerY + 80*scale], [centerX - 60*scale, centerY + 80*scale]],
+                [[centerX - 60*scale, centerY + 80*scale], [centerX - 60*scale, centerY - 20*scale]],
+                
+                // Cabeza (rectángulo más pequeño)
+                [[centerX - 40*scale, centerY - 20*scale], [centerX - 40*scale, centerY - 60*scale]],
+                [[centerX - 40*scale, centerY - 60*scale], [centerX + 40*scale, centerY - 60*scale]],
+                [[centerX + 40*scale, centerY - 60*scale], [centerX + 40*scale, centerY - 20*scale]],
+                
+                // Antena
+                [[centerX, centerY - 60*scale], [centerX, centerY - 80*scale]],
+                
+                // Ojo izquierdo
+                [[centerX - 25*scale, centerY - 50*scale], [centerX - 15*scale, centerY - 50*scale]],
+                [[centerX - 15*scale, centerY - 50*scale], [centerX - 15*scale, centerY - 35*scale]],
+                [[centerX - 15*scale, centerY - 35*scale], [centerX - 25*scale, centerY - 35*scale]],
+                [[centerX - 25*scale, centerY - 35*scale], [centerX - 25*scale, centerY - 50*scale]],
+                
+                // Ojo derecho
+                [[centerX + 15*scale, centerY - 50*scale], [centerX + 25*scale, centerY - 50*scale]],
+                [[centerX + 25*scale, centerY - 50*scale], [centerX + 25*scale, centerY - 35*scale]],
+                [[centerX + 25*scale, centerY - 35*scale], [centerX + 15*scale, centerY - 35*scale]],
+                [[centerX + 15*scale, centerY - 35*scale], [centerX + 15*scale, centerY - 50*scale]],
+                
+                // Panel en el pecho
+                [[centerX - 30*scale, centerY + 10*scale], [centerX + 30*scale, centerY + 10*scale]],
+                [[centerX + 30*scale, centerY + 10*scale], [centerX + 30*scale, centerY + 40*scale]],
+                [[centerX + 30*scale, centerY + 40*scale], [centerX - 30*scale, centerY + 40*scale]],
+                [[centerX - 30*scale, centerY + 40*scale], [centerX - 30*scale, centerY + 10*scale]],
+                
+                // Líneas del panel
+                [[centerX - 20*scale, centerY + 18*scale], [centerX + 20*scale, centerY + 18*scale]],
+                [[centerX - 20*scale, centerY + 25*scale], [centerX + 20*scale, centerY + 25*scale]],
+                [[centerX - 20*scale, centerY + 32*scale], [centerX + 20*scale, centerY + 32*scale]],
+                
+                // Brazo izquierdo (normal)
+                [[centerX - 60*scale, centerY + 10*scale], [centerX - 80*scale, centerY + 10*scale]],
+                [[centerX - 80*scale, centerY + 10*scale], [centerX - 80*scale, centerY + 50*scale]],
+                
+                // Brazo derecho (saludando - levantado)
+                [[centerX + 60*scale, centerY + 10*scale], [centerX + 80*scale, centerY + 10*scale]],
+                [[centerX + 80*scale, centerY + 10*scale], [centerX + 90*scale, centerY - 20*scale]],
+                [[centerX + 90*scale, centerY - 20*scale], [centerX + 100*scale, centerY - 40*scale]],
+                
+                // Mano saludando (líneas de movimiento)
+                [[centerX + 95*scale, centerY - 45*scale], [centerX + 110*scale, centerY - 50*scale]],
+                [[centerX + 95*scale, centerY - 40*scale], [centerX + 110*scale, centerY - 35*scale]],
+                [[centerX + 95*scale, centerY - 35*scale], [centerX + 110*scale, centerY - 30*scale]],
+                
+                // Piernas
+                [[centerX - 40*scale, centerY + 80*scale], [centerX - 40*scale, centerY + 120*scale]],
+                [[centerX - 40*scale, centerY + 120*scale], [centerX - 50*scale, centerY + 120*scale]],
+                [[centerX - 40*scale, centerY + 120*scale], [centerX - 30*scale, centerY + 120*scale]],
+                
+                [[centerX + 40*scale, centerY + 80*scale], [centerX + 40*scale, centerY + 120*scale]],
+                [[centerX + 40*scale, centerY + 120*scale], [centerX + 30*scale, centerY + 120*scale]],
+                [[centerX + 40*scale, centerY + 120*scale], [centerX + 50*scale, centerY + 120*scale]],
+            ];
+
+            let currentLine = 0;
+
+            function animateLine() {
+                if (currentLine >= lines.length) {
+                    drawingRobot = false;
+                    setTimeout(() => {
+                        wallECtx.clearRect(0, 0, wallECanvas.width, wallECanvas.height);
+                        setTimeout(drawRobot, 3000);
+                    }, 3000);
+                    return;
+                }
+
+                const line = lines[currentLine];
+                wallECtx.beginPath();
+                wallECtx.moveTo(line[0][0], line[0][1]);
+                wallECtx.lineTo(line[1][0], line[1][1]);
+                wallECtx.stroke();
+
+                currentLine++;
+                setTimeout(animateLine, 40);
+            }
+
+            animateLine();
+        }
+
+        drawRobot();
+
+        // Redimensionar canvas al cambiar tamaño de ventana
+        window.addEventListener('resize', () => {
+            wallECanvas.width = window.innerWidth;
+            wallECanvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
